@@ -10,6 +10,8 @@ public class HibernateUtil {
     private static final Logger logger = LogManager.getLogger(HibernateUtil.class);
     private static final SessionFactory sessionFactory = buildSessionFactory();
 
+    private HibernateUtil() {} // приватный конструктор для блокировки создания экземпляра класса
+
     private static SessionFactory buildSessionFactory() {
         try {
             Configuration configuration = new Configuration().configure("hibernate.cfg.xml");

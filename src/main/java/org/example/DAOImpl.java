@@ -22,6 +22,8 @@ public class DAOImpl implements DAO {
             if (transaction != null)
                 transaction.rollback();
             logger.error(e);
+            throw e;
+
         }
     }
 
@@ -33,6 +35,7 @@ public class DAOImpl implements DAO {
             user = session.find(User.class, id);
         } catch (Exception e) {
             logger.error(e);
+            throw e;
         }
         return user;
     }
@@ -46,10 +49,11 @@ public class DAOImpl implements DAO {
             return list;
         } catch (Exception e) {
             logger.error(e);
-            return list;
+            throw e;
         }
     }
 
+    @Override
     public void update(User user) {
         Transaction transaction = null;
 
@@ -65,9 +69,11 @@ public class DAOImpl implements DAO {
             if (transaction != null)
                 transaction.rollback();
             logger.error(e);
+            throw e;
         }
     }
 
+    @Override
     public void delete(Long userId) {
         Transaction transaction = null;
 
@@ -84,6 +90,7 @@ public class DAOImpl implements DAO {
             if (transaction != null)
                 transaction.rollback();
             logger.error(e);
+            throw e;
         }
     }
 }
