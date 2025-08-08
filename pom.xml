@@ -17,6 +17,7 @@
         <log4j.version>2.25.1</log4j.version>
         <junit.version>5.8.1</junit.version>
         <mockito.version>4.2.0</mockito.version>
+        <lombok.version>1.18.38</lombok.version>
     </properties>
 
     <dependencies>
@@ -54,6 +55,12 @@
             <artifactId>mockito-junit-jupiter</artifactId>
             <version>${mockito.version}</version>
             <scope>test</scope>
+        </dependency>
+
+        <dependency>
+            <groupId>org.projectlombok</groupId>
+            <artifactId>lombok</artifactId>
+            <version>${lombok.version}</version>
         </dependency>
 
     </dependencies>

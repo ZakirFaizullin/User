@@ -2,13 +2,15 @@ package org.example;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+import org.example.model.User;
+import org.example.service.Service;
 
 import java.util.List;
 import java.util.Scanner;
 
 public class Main {
     private static final Logger logger = LogManager.getLogger(Main.class);
-    static DAO dao = new DAOImpl();
+    static Service service = new Service();
     static Scanner scanner = new Scanner(System.in);
 
     public static void main(String[] args) {
@@ -67,14 +69,14 @@ public class Main {
         System.out.print("Enter user email: ");
         String userEmail = scanner.nextLine();
         User user = new User(userName, userAge, userEmail);
-        dao.save(user);
+        service.saveUser(user);
         System.out.println("User " + user.getName() + " has been created");
     }
 
     private static void findUser() {
         System.out.print("Enter user id: ");
         Long userId = Long.valueOf(scanner.nextLine());
-        User user = dao.findById(userId);
+        User user = service.findUser(userId);
         if (user != null) System.out.println("User found: " + user.getName());
         else System.out.println("User not found");
     }
@@ -82,7 +84,7 @@ public class Main {
     private static void updateUser() {
         System.out.print("Enter user id: ");
         Long userId = Long.valueOf(scanner.nextLine());
-        User user = dao.findById(userId);
+        User user = service.findUser(userId);
         if (user == null) {
             System.out.println("User not found");
             return;
@@ -98,25 +100,25 @@ public class Main {
         System.out.print("Enter new email: ");
         String newEmail = scanner.nextLine();
         if (!newEmail.isBlank()) user.setEmail(newEmail);
-        dao.update(user);
+        service.updateUser(user);
         System.out.println("User " + oldName + " has been updated");
     }
 
     private static void deleteUser() {
         System.out.print("Enter user id: ");
         Long userId = Long.valueOf(scanner.nextLine());
-        User user = dao.findById(userId);
+        User user = service.findUser(userId);
         if (user == null) {
             System.out.println("User not found");
             return;
         }
         System.out.println("User found: " + user.getName());
-        dao.delete(userId);
+        service.deleteUser(userId);
         System.out.println("User " + user.getName() + " has been deleted");
     }
 
     private static void getAllUsers() {
-        List<User> users = dao.findAll();
+        List<User> users = service.findAllUsers();
         if (users.isEmpty()) System.out.println("No users found");
         else {
             for (User user : users) {

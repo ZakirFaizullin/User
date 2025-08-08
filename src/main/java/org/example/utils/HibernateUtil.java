@@ -1,7 +1,8 @@
-package org.example;
+package org.example.utils;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+import org.example.model.User;
 import org.hibernate.SessionFactory;
 import org.hibernate.cfg.Configuration;
 

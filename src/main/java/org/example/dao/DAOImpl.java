@@ -1,7 +1,9 @@
-package org.example;
+package org.example.dao;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+import org.example.utils.HibernateUtil;
+import org.example.model.User;
 import org.hibernate.Session;
 import org.hibernate.Transaction;
 
@@ -11,13 +13,14 @@ public class DAOImpl implements DAO {
     private static final Logger logger = LogManager.getLogger(DAOImpl.class);
 
     @Override
-    public void save(User user) {
+    public boolean save(User user) {
         Transaction transaction = null;
 
         try (Session session = HibernateUtil.getSessionFactory().openSession()) {
             transaction = session.beginTransaction();
             session.persist(user);
             transaction.commit();
+            return true;
         } catch (Exception e) {
             if (transaction != null)
                 transaction.rollback();
@@ -54,7 +57,7 @@ public class DAOImpl implements DAO {
     }
 
     @Override
-    public void update(User user) {
+    public boolean update(User user) {
         Transaction transaction = null;
 
         try (Session session = HibernateUtil.getSessionFactory().openSession()) {
@@ -62,8 +65,10 @@ public class DAOImpl implements DAO {
                 transaction = session.beginTransaction();
                 session.merge(user);
                 transaction.commit();
+                return true;
             } else {
                 System.out.println("User not found!");
+                return false;
             }
         } catch (Exception e) {
             if (transaction != null)
@@ -74,7 +79,7 @@ public class DAOImpl implements DAO {
     }
 
     @Override
-    public void delete(Long userId) {
+    public boolean delete(Long userId) {
         Transaction transaction = null;
 
         try (Session session = HibernateUtil.getSessionFactory().openSession()) {
@@ -83,8 +88,10 @@ public class DAOImpl implements DAO {
                 transaction = session.beginTransaction();
                 session.remove(user);
                 transaction.commit();
+                return true;
             } else {
                 System.out.println("User not found!");
+                return false;
             }
         } catch (Exception e) {
             if (transaction != null)
