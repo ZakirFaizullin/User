@@ -2,6 +2,7 @@ package org.example.dao;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+import org.example.exceptions.DBException;
 import org.example.utils.HibernateUtil;
 import org.example.model.User;
 import org.hibernate.Session;
@@ -24,9 +25,8 @@ public class DAOImpl implements DAO {
         } catch (Exception e) {
             if (transaction != null)
                 transaction.rollback();
-            logger.error(e);
-            throw e;
-
+            logger.error("Error while saving", e);
+            throw new DBException("Error while saving: " + e.getMessage(), e);
         }
     }
 
@@ -37,8 +37,8 @@ public class DAOImpl implements DAO {
         try (Session session = HibernateUtil.getSessionFactory().openSession()) {
             user = session.find(User.class, id);
         } catch (Exception e) {
-            logger.error(e);
-            throw e;
+            logger.error("Error while fetching", e);
+            throw new DBException("Error while fetching: " + e.getMessage(), e);
         }
         return user;
     }
@@ -51,8 +51,8 @@ public class DAOImpl implements DAO {
             list = session.createQuery("from User", User.class).list();
             return list;
         } catch (Exception e) {
-            logger.error(e);
-            throw e;
+            logger.error("Error when selecting all users", e);
+            throw new DBException("Error when selecting all users: " + e.getMessage(), e);
         }
     }
 
@@ -73,8 +73,8 @@ public class DAOImpl implements DAO {
         } catch (Exception e) {
             if (transaction != null)
                 transaction.rollback();
-            logger.error(e);
-            throw e;
+            logger.error("Error while updating", e);
+            throw new  DBException("Error while updating: " + e.getMessage(), e);
         }
     }
 
@@ -96,8 +96,8 @@ public class DAOImpl implements DAO {
         } catch (Exception e) {
             if (transaction != null)
                 transaction.rollback();
-            logger.error(e);
-            throw e;
+            logger.error("Error while deleting", e);
+            throw new   DBException("Error while deleting: " + e.getMessage(), e);
         }
     }
 }
