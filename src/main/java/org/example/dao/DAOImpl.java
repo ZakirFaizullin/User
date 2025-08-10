@@ -2,7 +2,7 @@ package org.example.dao;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
-import org.example.exceptions.DBException;
+import org.example.exceptions.DbException;
 import org.example.utils.HibernateUtil;
 import org.example.model.User;
 import org.hibernate.Session;
@@ -14,19 +14,18 @@ public class DAOImpl implements DAO {
     private static final Logger logger = LogManager.getLogger(DAOImpl.class);
 
     @Override
-    public boolean save(User user) {
+    public void save(User user) {
         Transaction transaction = null;
 
         try (Session session = HibernateUtil.getSessionFactory().openSession()) {
             transaction = session.beginTransaction();
             session.persist(user);
             transaction.commit();
-            return true;
         } catch (Exception e) {
             if (transaction != null)
                 transaction.rollback();
             logger.error("Error while saving", e);
-            throw new DBException("Error while saving: " + e.getMessage(), e);
+            throw new DbException("Error while saving: " + e.getMessage(), e);
         }
     }
 
@@ -38,7 +37,7 @@ public class DAOImpl implements DAO {
             user = session.find(User.class, id);
         } catch (Exception e) {
             logger.error("Error while fetching", e);
-            throw new DBException("Error while fetching: " + e.getMessage(), e);
+            throw new DbException("Error while fetching: " + e.getMessage(), e);
         }
         return user;
     }
@@ -52,12 +51,12 @@ public class DAOImpl implements DAO {
             return list;
         } catch (Exception e) {
             logger.error("Error when selecting all users", e);
-            throw new DBException("Error when selecting all users: " + e.getMessage(), e);
+            throw new DbException("Error when selecting all users: " + e.getMessage(), e);
         }
     }
 
     @Override
-    public boolean update(User user) {
+    public void update(User user) {
         Transaction transaction = null;
 
         try (Session session = HibernateUtil.getSessionFactory().openSession()) {
@@ -65,21 +64,19 @@ public class DAOImpl implements DAO {
                 transaction = session.beginTransaction();
                 session.merge(user);
                 transaction.commit();
-                return true;
             } else {
                 System.out.println("User not found!");
-                return false;
             }
         } catch (Exception e) {
             if (transaction != null)
                 transaction.rollback();
             logger.error("Error while updating", e);
-            throw new  DBException("Error while updating: " + e.getMessage(), e);
+            throw new DbException("Error while updating: " + e.getMessage(), e);
         }
     }
 
     @Override
-    public boolean delete(Long userId) {
+    public void delete(Long userId) {
         Transaction transaction = null;
 
         try (Session session = HibernateUtil.getSessionFactory().openSession()) {
@@ -88,16 +85,13 @@ public class DAOImpl implements DAO {
                 transaction = session.beginTransaction();
                 session.remove(user);
                 transaction.commit();
-                return true;
-            } else {
+            } else
                 System.out.println("User not found!");
-                return false;
-            }
         } catch (Exception e) {
             if (transaction != null)
                 transaction.rollback();
             logger.error("Error while deleting", e);
-            throw new   DBException("Error while deleting: " + e.getMessage(), e);
+            throw new DbException("Error while deleting: " + e.getMessage(), e);
         }
     }
 }

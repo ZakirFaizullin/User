@@ -2,7 +2,7 @@ package org.example;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
-import org.example.exceptions.DBException;
+import org.example.exceptions.DbException;
 import org.example.model.User;
 import org.example.service.Service;
 
@@ -73,7 +73,7 @@ public class Main {
             User user = new User(userName, userAge, userEmail);
             service.saveUser(user);
             System.out.println("User " + user.getName() + " has been created");
-        } catch (DBException e) {
+        } catch (DbException e) {
             logger.error("Database error", e);
             System.out.println("Database error: " + e.getMessage());
         }
@@ -86,7 +86,7 @@ public class Main {
             User user = service.findUser(userId);
             if (user != null) System.out.println("User found: " + user.getName());
             else System.out.println("User not found");
-        } catch (DBException e) {
+        } catch (DbException e) {
             logger.error("Database error", e);
             System.out.println("Database error: " + e.getMessage());
         }
@@ -114,7 +114,7 @@ public class Main {
             if (!newEmail.isBlank()) user.setEmail(newEmail);
             service.updateUser(user);
             System.out.println("User " + oldName + " has been updated");
-        } catch (DBException e) {
+        } catch (DbException e) {
             logger.error("Database error", e);
             System.out.println("Database error: " + e.getMessage());
         }
@@ -132,7 +132,7 @@ public class Main {
             System.out.println("User found: " + user.getName());
             service.deleteUser(userId);
             System.out.println("User " + user.getName() + " has been deleted");
-        } catch (DBException e) {
+        } catch (DbException e) {
             logger.error("Database error", e);
             System.out.println("Database error: " + e.getMessage());
         }
@@ -148,7 +148,7 @@ public class Main {
                             + "|" + user.getEmail() + "|" + user.getCreatedAt());
                 }
             }
-        } catch (DBException e) {
+        } catch (DbException e) {
             logger.error("Database error", e);
             System.out.println("Database error: " + e.getMessage());
         }

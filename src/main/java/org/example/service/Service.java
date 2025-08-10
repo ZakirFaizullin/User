@@ -9,8 +9,8 @@ import java.util.List;
 public class Service {
     private static final DAO dao = new DAOImpl();
 
-    public boolean saveUser(User user) {
-        return dao.save(user);
+    public void saveUser(User user) {
+        dao.save(user);
     }
 
     public User findUser(Long id) {
@@ -21,11 +21,11 @@ public class Service {
         return dao.findAll();
     }
 
-    public boolean updateUser(User user) {
-        return dao.update(user);
+    public void updateUser(User user) {
+        dao.update(user);
     }
 
-    public boolean deleteUser(Long userId) {
-        return dao.delete(userId);
+    public void deleteUser(Long userId) {
+        dao.delete(userId);
     }
 }
