@@ -1,13 +1,14 @@
 package org.example.service;
 
+import lombok.AllArgsConstructor;
 import org.example.dao.DAO;
-import org.example.dao.DAOImpl;
 import org.example.model.User;
 
 import java.util.List;
 
+@AllArgsConstructor
 public class Service {
-    private static final DAO dao = new DAOImpl();
+    private final DAO dao;
 
     public void saveUser(User user) {
         dao.save(user);

@@ -2,6 +2,7 @@ package org.example;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+import org.example.dao.DAOImpl;
 import org.example.exceptions.DbException;
 import org.example.model.User;
 import org.example.service.Service;
@@ -11,7 +12,7 @@ import java.util.Scanner;
 
 public class Main {
     private static final Logger logger = LogManager.getLogger(Main.class);
-    static Service service = new Service();
+    static Service service = new Service(new DAOImpl());
     static Scanner scanner = new Scanner(System.in);
 
     public static void main(String[] args) {
