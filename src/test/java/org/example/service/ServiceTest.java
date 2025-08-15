@@ -2,6 +2,7 @@ package org.example.service;
 
 import org.assertj.core.api.Assertions;
 import org.example.dao.DAO;
+import org.example.exceptions.DbException;
 import org.example.model.User;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -67,4 +68,25 @@ class ServiceTest {
 
         Mockito.verify(dao).delete(id);
     }
+
+    @Test
+    public void dbException_MustContainValidMessage() {
+        Exception exception = new RuntimeException("test");
+        DbException dbException = new DbException("DbException message", exception);
+
+        Assertions.assertThat("DbException message").isEqualTo(dbException.getMessage());
+        Assertions.assertThat(exception).isEqualTo(dbException.getCause());
+    }
+
+    @Test
+    public void givenId_whenFindById_thenThrowsException() {
+        Long id = 1000001L;
+        RuntimeException rte = new RuntimeException("manually thrown exception in findById method");
+        Mockito.when(dao.findById(id)).thenThrow(new DbException("Error while fetching: " + rte.getMessage(), rte));
+
+        Assertions.assertThatThrownBy(() -> dao.findById(id))
+                .isExactlyInstanceOf(DbException.class)
+                .hasMessage("Error while fetching: manually thrown exception in findById method");
+    }
+
 }

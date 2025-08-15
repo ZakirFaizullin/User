@@ -17,13 +17,13 @@ public class User {
     @Column(name = "id")
     private Long id;
 
-    @Column(name = "name", length = Integer.MAX_VALUE)
+    @Column(nullable = false,name = "name", length = Integer.MAX_VALUE)
     private String name;
 
-    @Column(name = "age")
+    @Column(nullable = false,name = "age")
     private Integer age;
 
-    @Column(name = "email", length = Integer.MAX_VALUE)
+    @Column(nullable = false, name = "email", length = Integer.MAX_VALUE)
     private String email;
 
     @CreationTimestamp

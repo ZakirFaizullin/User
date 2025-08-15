@@ -1,6 +1,9 @@
 package org.example.dao;
 
 import org.example.model.User;
+import org.example.utils.HibernateUtil;
+import org.hibernate.Session;
+import org.hibernate.Transaction;
 import org.junit.jupiter.api.*;
 import org.testcontainers.containers.PostgreSQLContainer;
 import org.testcontainers.junit.jupiter.Container;
@@ -41,9 +44,21 @@ class DAOImplIT {
     }
 
     @Test
-    void testSaveAndFind() {
+    void testSave() {
         User user = new User("Zakir", 35, "zakir@example.com");
         dao.save(user);
+
+        User savedUser = findInTestDb(user.getId());
+        assertNotNull(savedUser);
+        assertEquals("Zakir", savedUser.getName());
+        assertEquals(35, savedUser.getAge());
+        assertEquals("zakir@example.com", savedUser.getEmail());
+    }
+
+    @Test
+    void testFind() {
+        User user = new User("Zakir", 35, "zakir@example.com");
+        saveInTestDb(user);
 
         User savedUser = dao.findById(user.getId());
         assertNotNull(savedUser);
@@ -55,15 +70,15 @@ class DAOImplIT {
     @Test
     void testUpdate() {
         User user = new User("Zakir", 35, "zakir@example.com");
-        dao.save(user);
+        saveInTestDb(user);
 
-        User savedUser = dao.findById(user.getId());
+        User savedUser = findInTestDb(user.getId());
         savedUser.setName("John");
         savedUser.setAge(25);
         savedUser.setEmail("john@example.com");
         dao.update(savedUser);
 
-        User updatedUser = dao.findById(user.getId());
+        User updatedUser = findInTestDb(user.getId());
         assertNotNull(updatedUser);
         assertEquals("John", updatedUser.getName());
         assertEquals(25, updatedUser.getAge());
@@ -71,11 +86,11 @@ class DAOImplIT {
     }
 
     @Test
-    void findAll() {
+    void testFindAll() {
         User user1 = new User("Zakir", 35, "zakir@example.com");
         User user2 = new User("John", 25, "john@example.com");
-        dao.save(user1);
-        dao.save(user2);
+        saveInTestDb(user1);
+        saveInTestDb(user2);
 
         List<User> users = dao.findAll();
 
@@ -83,17 +98,17 @@ class DAOImplIT {
     }
 
     @Test
-    void delete() {
-        List<User> list1 = dao.findAll();
+    void testDelete() {
+        List<User> list1 = findAllInTestDb();
         assertEquals(0, list1.size());
         User user = new User("Zakir", 35, "zakir@example.com");
-        dao.save(user);
+        saveInTestDb(user);
 
-        List<User> list2 = dao.findAll();
+        List<User> list2 = findAllInTestDb();
         assertEquals(1, list2.size());
 
         dao.delete(user.getId());
-        List<User> list3 = dao.findAll();
+        List<User> list3 = findAllInTestDb();
         assertEquals(0, list3.size());
     }
 
@@ -102,4 +117,28 @@ class DAOImplIT {
         User user = dao.findById(10000L);
         assertNull(user);
     }
+
+
+    //Ниже вспомогательные методы для работы с тестовой бд
+
+    void saveInTestDb(User user) {
+        try (Session session = HibernateUtil.getSessionFactory().openSession()) {
+            Transaction transaction = session.beginTransaction();
+            session.persist(user);
+            transaction.commit();
+        }
+    }
+
+    User findInTestDb(Long id) {
+        try (Session session = HibernateUtil.getSessionFactory().openSession()) {
+            return session.find(User.class, id);
+        }
+    }
+
+    List<User> findAllInTestDb() {
+        try (Session session = HibernateUtil.getSessionFactory().openSession()) {
+            return session.createQuery("from User", User.class).list();
+        }
+    }
+
 }
